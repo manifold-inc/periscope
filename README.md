@@ -50,16 +50,23 @@ This framework provides a Docker-based environment for performance testing of Op
 
 ## Features
 
-- 🐳 **Containerized Environment**: Easily deployable with Docker and Docker Compose
-- 📈 **Built-in Metrics Dashboards**: Pre-configured Grafana dashboards for visualizing test results
-- 🧪 **Specialized Test Scripts**:
-  - Chat Completions testing
-  - Embeddings generation testing
+- **Containerized Environment**: Docker and Docker Compose based deployment
+- **Metrics Visualization**: Pre-configured Grafana dashboards for test results
+- **Core API Testing**:
+  - Chat completions testing
+  - Embeddings generation testing (single and batch)
   - Code completion with prefix caching
-  - Comprehensive benchmarking between endpoints
-- 🔧 **Extensible Framework**: Easily create custom test scripts for specific scenarios
-- 📊 **Detailed Analytics**: Token usage, latency metrics, throughput, and more
-- 🛠️ **Comprehensive Makefile**: Simplified management of the testing environment
+- **Performance Testing Patterns**:
+  - Smoke tests for basic functionality validation
+  - Stress tests for identifying breaking points
+  - Spike tests for sudden load surges
+  - Soak tests for long-duration stability
+  - Recovery tests for measuring system stabilization
+  - Prefill-heavy tests for context processing efficiency
+  - Decode-heavy tests for output generation throughput
+- **Extensible Framework**: Modular design for custom test script creation
+- **Comprehensive Metrics**: Token usage, latency, throughput, and processing rates
+- **Automated Workflows**: Makefile-based command system for test management
 
 ## Prerequisites
 
