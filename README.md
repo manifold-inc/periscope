@@ -8,14 +8,14 @@
   <p align="center">
     Periscope K6 LLM Performance Testing Framework
     <br />
-    <a href="https://github.com/wizenheimer/periscope/README.md"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/wizenheimer/periscope/tree/main/README.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/wizenheimer/periscope/scripts">View Scripts</a>
+    <a href="https://github.com/wizenheimer/periscope/tree/main/scripts">View Scripts</a>
     &middot;
-    <a href="https://github.com/wizenheimer/periscope/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/wizenheimer/periscope/tree/main/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
-    <a href="https://github.com/wizenheimer/periscope/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/wizenheimer/periscope/tree/main/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
