@@ -3,7 +3,7 @@
   <a href="https://github.com/wizenheimer/periscope">
   </a>
 
-  <h3 align="center">Persicope</h3>
+  <h3 align="center">Periscope</h3>
 
   <p align="center">
     Periscope K6 LLM Performance Testing Framework
@@ -72,8 +72,8 @@ This framework provides a Docker-based environment for performance testing of Op
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/wizenheimer/k6-llm-perf.git
-   cd k6-llm-perf
+   git clone https://github.com/wizenheimer/periscope.git
+   cd periscope
    ```
 
 2. Initialize the environment:
