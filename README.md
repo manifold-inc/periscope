@@ -1,4 +1,23 @@
-# K6 LLM Performance Testing Framework
+<br />
+<div align="center">
+  <a href="https://github.com/wizenheimer/periscope">
+  </a>
+
+  <h3 align="center">Persicope</h3>
+
+  <p align="center">
+    Periscope K6 LLM Performance Testing Framework
+    <br />
+    <a href="https://github.com/wizenheimer/periscope/README.md"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/wizenheimer/periscope/scripts">View Scripts</a>
+    &middot;
+    <a href="https://github.com/wizenheimer/periscope/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    &middot;
+    <a href="https://github.com/wizenheimer/periscope/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
 
 [![OpenAI Compatible](https://img.shields.io/badge/OpenAI-Compatible-brightgreen.svg)](https://openai.com/)
 [![K6](https://img.shields.io/badge/K6-Framework-blue.svg)](https://k6.io/)
@@ -609,5 +628,6 @@ Use at your own risk. Side effects may include improved system resilience, fewer
 
 ## Credits
 
-Consider this as my small act of rebellion against the "just eyeball the performance" approach to perf testing. Feel free to star the repo - each star will be printed and taped to my manager's door. 
+Consider this as my small act of rebellion against the "just eyeball the performance" approach to perf testing. Feel free to star the repo - each star will be printed and taped to my manager's door.
+
 - A Developer With Too Much Time and Not Enough Approval
