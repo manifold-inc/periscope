@@ -10,7 +10,7 @@ export const options = {
 const client = oai.createClient({
     url: config.openai.url,
     options: {
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4o-mini',
     },
     headers: {
     'Authorization': `Bearer ${config.openai.key}`,

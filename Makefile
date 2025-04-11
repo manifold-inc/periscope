@@ -1,13 +1,17 @@
 # K6 OpenAI Testing Framework - Makefile
 # Configuration variables
-OPENAI_API_KEY ?= "your-api-key-here"
+OPENAI_API_KEY ?= "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"
 OPENAI_BASE_URL ?= "https://api.openai.com"
-OPENAI_COMPLETION_MODEL ?= "gpt-3.5-turbo"
+OPENAI_COMPLETION_MODEL ?= "gpt-4o-mini"
 OPENAI_EMBEDDING_MODEL ?= "text-embedding-3-small"
-OPENAI_CODING_MODEL ?= "gpt-3.5-turbo"
+OPENAI_CODING_MODEL ?= "gpt-4o-mini"
 MAX_TOKENS ?= 64
 VUS ?= 1
 TIMEOUT ?= 5m
+TIME_WAIT ?= "0s"
+TIME_RAMP_UP ?= "30s" 
+TIME_LOAD ?= "1m"
+TIME_RAMP_DOWN ?= "30s"
 
 # Docker compose command
 DOCKER_COMPOSE = docker-compose
@@ -20,6 +24,24 @@ export OPENAI_EMBEDDING_MODEL
 export OPENAI_CODING_MODEL
 export MAX_TOKENS
 export VUS
+export TIMEOUT
+export TIME_WAIT
+export TIME_RAMP_UP
+export TIME_LOAD
+export TIME_RAMP_DOWN
+
+# Define k6 environment variables to pass to scripts
+K6_ENV_VARS = -e OPENAI_API_KEY=$(OPENAI_API_KEY) \
+              -e OPENAI_BASE_URL=$(OPENAI_BASE_URL) \
+              -e OPENAI_COMPLETION_MODEL=$(OPENAI_COMPLETION_MODEL) \
+              -e OPENAI_EMBEDDING_MODEL=$(OPENAI_EMBEDDING_MODEL) \
+              -e OPENAI_CODING_MODEL=$(OPENAI_CODING_MODEL) \
+              -e MAX_TOKENS=$(MAX_TOKENS) \
+              -e VUS=$(VUS) \
+              -e TIME_WAIT=$(TIME_WAIT) \
+              -e TIME_RAMP_UP=$(TIME_RAMP_UP) \
+              -e TIME_LOAD=$(TIME_LOAD) \
+              -e TIME_RAMP_DOWN=$(TIME_RAMP_DOWN)
 
 # Colors for output
 GREEN = \033[0;32m
@@ -69,8 +91,14 @@ help:
 	@echo "  OPENAI_CODING_MODEL=${OPENAI_CODING_MODEL}"
 	@echo "  MAX_TOKENS=${MAX_TOKENS}"
 	@echo "  VUS=${VUS}"
+	@echo "  TIME_WAIT=${TIME_WAIT}"
+	@echo "  TIME_RAMP_UP=${TIME_RAMP_UP}"
+	@echo "  TIME_LOAD=${TIME_LOAD}"
+	@echo "  TIME_RAMP_DOWN=${TIME_RAMP_DOWN}"
+	@echo "  TIMEOUT=${TIMEOUT}"
 	@echo ""
 	@echo "Example: make test-completions OPENAI_API_KEY=xyz OPENAI_COMPLETION_MODEL=gpt-4"
+	@echo "Note: Environment variables are passed to k6 scripts using the -e flag"
 
 # Setup the environment
 setup:
@@ -105,137 +133,137 @@ restart: stop start
 # Run OpenAI completions test
 test-completions:
 	@echo "${GREEN}Running OpenAI completions test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions.js
 
 # Run OpenAI single embeddings test
 test-embeddings:
 	@echo "${GREEN}Running OpenAI single embeddings test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings.js
 
 # Run OpenAI batch embeddings test
 test-batch-embeddings:
 	@echo "${GREEN}Running OpenAI batch embeddings test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-batch-embeddings.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-batch-embeddings.js
 
 # Run OpenAI benchmark
 test-benchmark:
 	@echo "${GREEN}Running OpenAI benchmark...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-benchmark.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-benchmark.js
 
 # Run OpenAI prefix caching test
 test-prefix-caching:
 	@echo "${GREEN}Running OpenAI prefix caching test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-prefix-caching.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-prefix-caching.js
 
 # Run all tests sequentially
 test-all:
 	@echo "${GREEN}Running all tests sequentially...${NC}"
 	@echo "${YELLOW}1. Running completions test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions.js
 	@echo "${YELLOW}2. Running single embeddings test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings.js
 	@echo "${YELLOW}3. Running batch embeddings test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-batch-embeddings.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-batch-embeddings.js
 	@echo "${YELLOW}4. Running benchmark test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-benchmark.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-benchmark.js
 	@echo "${YELLOW}5. Running prefix caching test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-prefix-caching.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-prefix-caching.js
 	@echo "${GREEN}All tests completed.${NC}"
 
 # OpenAI Completions Test Types
 test-completions-smoke:
 	@echo "${GREEN}Running OpenAI completions smoke test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-smoke.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-smoke.js
 
 test-completions-stress:
 	@echo "${GREEN}Running OpenAI completions stress test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-stress.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-stress.js
 
 test-completions-spike:
 	@echo "${GREEN}Running OpenAI completions spike test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-spike.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-spike.js
 
 test-completions-soak:
 	@echo "${GREEN}Running OpenAI completions soak test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-soak.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-soak.js
 
 test-completions-recovery:
 	@echo "${GREEN}Running OpenAI completions recovery test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-recovery.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-recovery.js
 
 # OpenAI Embeddings Test Types
 test-embeddings-smoke:
 	@echo "${GREEN}Running OpenAI embeddings smoke test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-smoke.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-smoke.js
 
 test-embeddings-stress:
 	@echo "${GREEN}Running OpenAI embeddings stress test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-stress.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-stress.js
 
 test-embeddings-spike:
 	@echo "${GREEN}Running OpenAI embeddings spike test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-spike.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-spike.js
 
 test-embeddings-soak:
 	@echo "${GREEN}Running OpenAI embeddings soak test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-soak.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-soak.js
 
 test-embeddings-recovery:
 	@echo "${GREEN}Running OpenAI embeddings recovery test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-recovery.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-recovery.js
 
 # Combined Test Scenarios
 test-smoke-all:
 	@echo "${GREEN}Running all smoke tests...${NC}"
 	@echo "${YELLOW}1. Running completions smoke test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-smoke.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-smoke.js
 	@echo "${YELLOW}2. Running embeddings smoke test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-smoke.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-smoke.js
 
 test-stress-all:
 	@echo "${GREEN}Running all stress tests...${NC}"
 	@echo "${YELLOW}1. Running completions stress test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-stress.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-stress.js
 	@echo "${YELLOW}2. Running embeddings stress test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-stress.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-stress.js
 
 test-spike-all:
 	@echo "${GREEN}Running all spike tests...${NC}"
 	@echo "${YELLOW}1. Running completions spike test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-spike.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-spike.js
 	@echo "${YELLOW}2. Running embeddings spike test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-spike.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-spike.js
 
 test-soak-all:
 	@echo "${GREEN}Running all soak tests...${NC}"
 	@echo "${YELLOW}1. Running completions soak test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-soak.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-soak.js
 	@echo "${YELLOW}2. Running embeddings soak test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-soak.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-soak.js
 
 test-recovery-all:
 	@echo "${GREEN}Running all recovery tests...${NC}"
 	@echo "${YELLOW}1. Running completions recovery test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-recovery.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-recovery.js
 	@echo "${YELLOW}2. Running embeddings recovery test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-embeddings-recovery.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-embeddings-recovery.js
 
 # OpenAI Completions Heavy Tests
 test-completions-prefill-heavy:
 	@echo "${GREEN}Running OpenAI completions prefill-heavy test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-prefill-heavy.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-prefill-heavy.js
 
 test-completions-decode-heavy:
 	@echo "${GREEN}Running OpenAI completions decode-heavy test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-decode-heavy.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-decode-heavy.js
 
 # Combined heavy tests
 test-completions-heavy-all:
 	@echo "${GREEN}Running all completions heavy tests...${NC}"
 	@echo "${YELLOW}1. Running prefill-heavy test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-prefill-heavy.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-prefill-heavy.js
 	@echo "${YELLOW}2. Running decode-heavy test...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/openai-completions-decode-heavy.js
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/openai-completions-decode-heavy.js
 	
 # Show logs from services
 logs:
@@ -292,4 +320,4 @@ test:
 		exit 1; \
 	fi
 	@echo "${GREEN}Running test script: $(script)...${NC}"
-	@$(DOCKER_COMPOSE) run --rm k6 run /scripts/$(script)
+	@$(DOCKER_COMPOSE) run --rm k6 run $(K6_ENV_VARS) /scripts/$(script)

@@ -31,7 +31,7 @@ export const chatCompletion = ({
   ...rest
 }) => {
   return mergeDeep({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4o-mini',
     max_tokens: 256,
     temperature: 0.7,
     seed: 0,
