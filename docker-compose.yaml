@@ -1,12 +1,13 @@
 version: "3"
 services:
   k6:
+    build:
+      context: .
     container_name: k6
     environment:
       K6_OUT: influxdb=http://k6-influxdb:8086/k6
     extra_hosts:
       - host.docker.internal=host-gateway
-    image: grafana/k6:latest
     ports:
       - "6565:6565"
     volumes:

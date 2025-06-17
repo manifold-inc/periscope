@@ -1,5 +1,6 @@
 # K6 OpenAI Testing Framework - Makefile
 # Configuration variables
+include .env
 OPENAI_API_KEY ?= "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"
 OPENAI_BASE_URL ?= "https://api.openai.com"
 OPENAI_COMPLETION_MODEL ?= "gpt-4o-mini"

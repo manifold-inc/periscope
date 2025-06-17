@@ -2,8 +2,8 @@ import { sleep } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import * as oai from './helpers/openaiGeneric.js';
 import { chatCompletion } from './payloads/completions.js';
-import { any } from './helpers/utils.js';
 import config from './config.js';
+import {Faker} from 'k6/x/faker';
 
 /**
  * Stress Test for OpenAI Completions
@@ -19,23 +19,20 @@ const responseTime = new Trend('response_time');
 const errorCounter = new Counter('api_errors');
 const successCounter = new Counter('api_success');
 
-// Variety of prompts with different complexities
-const testPrompts = [
-  { role: 'user', content: 'Write a paragraph explaining how machine learning works to a 10-year old.' },
-  { role: 'user', content: 'Describe the differences between classical and quantum computing.' },
-  { role: 'user', content: 'Explain the concept of climate change and its potential impacts.' },
-  { role: 'user', content: 'Compare and contrast the philosophies of Kant and Nietzsche.' },
-  { role: 'user', content: 'Outline the key events of World War II in chronological order.' },
-];
+const faker = new Faker(11)
+
+function newPrompt(){
+  return { role: 'user', content: [...new Array(100)].reduce((last, _) => last + faker.word.sentence(50), "Respond to the following input with similar words for as long as you can: ") }
+}
 
 export const options = {
   // Gradually increase load to find breaking points
   stages: [
-    { duration: '1m', target: 2 },   // Ramp up to 2 users
+    { duration: '1m', target: 1 },   // Ramp up to 5 users
     { duration: '1m', target: 5 },   // Ramp up to 5 users
-    { duration: '2m', target: 10 },  // Ramp up to 10 users
-    { duration: '1m', target: 15 },  // Ramp up to 15 users
-    { duration: '2m', target: 20 },  // Stay at 20 users
+    { duration: '3m', target: 25 },   // Ramp up to 5 users
+    { duration: '3m', target: 50 },   // Ramp up to 5 users
+    { duration: '4m', target: 100 },  // Stay at 20 users
     { duration: '1m', target: 0 },   // Ramp down to 0 users
   ],
   thresholds: {
@@ -44,6 +41,7 @@ export const options = {
     'api_errors': ['count<50'],       // Fewer than 50 total errors
   },
 };
+
 
 // Create OpenAI client
 const client = oai.createClient({
@@ -58,7 +56,7 @@ const client = oai.createClient({
 
 export default function run() {
   // Randomly select a prompt
-  const prompt = any(testPrompts);
+  const prompt = newPrompt()
   
   // Add a timestamp to help identify concurrent requests
   const timestamp = new Date().toISOString();
@@ -71,7 +69,7 @@ export default function run() {
   // Create payload with longer response
   const payload = chatCompletion({
     messages: [prompt],
-    max_tokens: 150, // Larger responses for stress testing
+    max_tokens: __ENV.MAX_TOKENS || 150, // Larger responses for stress testing
     temperature: 0.7,
   });
   
@@ -90,7 +88,7 @@ export default function run() {
     console.log(`[${requestId}] Response received in ${elapsed}ms: "${content.substring(0, 30)}..."`);
     
     // Add some variability to the test
-    sleep(Math.random() * 2 + 0.5); // Sleep between 0.5 and 2.5 seconds
+    sleep(Math.random()); // Sleep between 0 and 1 seconds.
   } catch (error) {
     errorCounter.add(1);
     console.error(`[${requestId}] Error: ${error.message}`);
