@@ -4,7 +4,7 @@
 set dotenv-load := true
 
 # API Configuration
-OPENAI_API_KEY := "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"
+OPENAI_API_KEY := ""
 OPENAI_BASE_URL := "https://api.openai.com"
 OPENAI_COMPLETION_MODEL := "gpt-4o-mini"
 OPENAI_EMBEDDING_MODEL := "text-embedding-3-small"
